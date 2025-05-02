@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     private float _originalColliderHeight;
     private Vector2 _originalColliderOffset;
     private bool  _isCrouching;
+    
+    // accelration
+    [SerializeField] private float acceleration = 10f; 
+    private float _currentSpeed = 0f;
 
     private void Start()
     {
@@ -68,7 +72,10 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer(float horizontalInput)
     {
-        rb2d.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb2d.linearVelocity.y);
+        float targetSpeed = horizontalInput * moveSpeed;
+        _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
+        rb2d.linearVelocity = new Vector2(_currentSpeed, rb2d.linearVelocity.y);
+        
         //animator.SetFloat("Speed", Math.Abs(rb2d.linearVelocity.x));
         if (rb2d.linearVelocity.x < 0f)
             spriteRenderer.flipX = true;

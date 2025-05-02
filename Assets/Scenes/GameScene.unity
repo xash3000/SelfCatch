@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e34118f54f9dc4438836aef8cd85a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
+  moveSpeed: 10
   jumpForce: 7
   rb2d: {fileID: 22951888}
   groundLayer:
@@ -242,6 +242,7 @@ MonoBehaviour:
   jumpAxis: Jump
   crouchSpeedFactor: 0.5
   capsuleCollider: {fileID: 22951887}
+  acceleration: 10
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
