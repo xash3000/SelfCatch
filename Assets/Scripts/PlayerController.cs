@@ -46,14 +46,14 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if (!GameManager.Instance.gameRunning) return;
+        if (!GameManager.Instance.gameRunning) return;
         float horizontalInput = Input.GetAxis(horizontalAxis);
         MovePlayer(horizontalInput);
     }
 
     private void Update()
     {
-        // if (!GameManager.Instance.gameRunning) return;
+        if (!GameManager.Instance.gameRunning) return;
         _isGrounded = CheckIsGrounded();
         if (_isGrounded && Input.GetButtonDown(jumpAxis))
         {
