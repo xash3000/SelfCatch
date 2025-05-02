@@ -9,8 +9,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 2f;
     [SerializeField] private SpriteRenderer spriteRenderer;
-    // [SerializeField] private Animator animator;
-    // [SerializeField] private Transform playerRespawnPoint;
+    [SerializeField] private Animator animator;
+    //[SerializeField] private Transform playerRespawnPoint;
     [SerializeField] private string horizontalAxis;
     [SerializeField] private string jumpAxis;
 
@@ -19,13 +19,15 @@ public class PlayerController : MonoBehaviour
     private bool _isGrounded;
     
     // crouch
-    [SerializeField] private float crouchSpeedFactor = 0.5f;
+    //[SerializeField] private float crouchSpeedFactor = 0.5f;
     [SerializeField] private CapsuleCollider2D capsuleCollider;
     private float _originalColliderHeight;
     private Vector2 _originalColliderOffset;
     private bool  _isCrouching;
+    [SerializeField] private float crouchTransformYOffset = -0.25f;
+    [SerializeField] private Transform playerVisualTransform;
     
-    // accelration
+    // acceleration
     [SerializeField] private float acceleration = 10f; 
     private float _currentSpeed = 0f;
 
@@ -56,12 +58,13 @@ public class PlayerController : MonoBehaviour
         if (_isGrounded && Input.GetButtonDown(jumpAxis))
         {
             Jump();
-            //animator.SetBool("Jump", true);
+            animator.SetBool("Jump", true);
         }
         else
         {
-            //animator.SetBool("Jump", false);
+                animator.SetBool("Jump", false);
         }
+        animator.SetBool("IsGrounded", _isGrounded);
         
         bool wantToCrouch = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if (wantToCrouch && _isGrounded)
@@ -73,10 +76,12 @@ public class PlayerController : MonoBehaviour
     private void MovePlayer(float horizontalInput)
     {
         float targetSpeed = horizontalInput * moveSpeed;
-        _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
+        
+        if(!_isCrouching) // accelerate only when not crouching
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
         rb2d.linearVelocity = new Vector2(_currentSpeed, rb2d.linearVelocity.y);
         
-        //animator.SetFloat("Speed", Math.Abs(rb2d.linearVelocity.x));
+        animator.SetFloat("Speed", Math.Abs(rb2d.linearVelocity.x));
         if (rb2d.linearVelocity.x < 0f)
             spriteRenderer.flipX = true;
         if (rb2d.linearVelocity.x > 0f)
@@ -106,10 +111,14 @@ public class PlayerController : MonoBehaviour
         if (_isCrouching) return; 
         
         _isCrouching = true;
+        playerVisualTransform.localPosition = new Vector3(
+            playerVisualTransform.localPosition.x, 
+            crouchTransformYOffset, 
+            playerVisualTransform.localPosition.z);
         
-        capsuleCollider.size  = new Vector2(capsuleCollider.size.x, _originalColliderHeight * 0.5f);
+        capsuleCollider.size  = new Vector2(capsuleCollider.size.x, _originalColliderHeight * 0.7f);
         capsuleCollider.offset = new Vector2(_originalColliderOffset.x, _originalColliderOffset.y - (_originalColliderHeight * 0.25f));
-        // animator?.SetBool("Crouch", true);
+        animator?.SetBool("Crouch", true);
     }
 
     private void StopCrouch()
@@ -125,6 +134,11 @@ public class PlayerController : MonoBehaviour
         
         capsuleCollider.size   = new Vector2(capsuleCollider.size.x, _originalColliderHeight);
         capsuleCollider.offset = _originalColliderOffset;
-        // animator?.SetBool("Crouch", false);
+        animator?.SetBool("Crouch", false);
+        
+        playerVisualTransform.localPosition = new Vector3(
+            playerVisualTransform.localPosition.x, 
+            0f, 
+            playerVisualTransform.localPosition.z);
     }
 }
