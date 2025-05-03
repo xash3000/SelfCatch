@@ -67,5 +67,6 @@ public class GameManager : MonoBehaviour
         Debug.Log($"You lost: Player Escaped");
         gameRunning = false;
         gameLost?.Invoke();
+        cam.player = player.transform;
     }
 }

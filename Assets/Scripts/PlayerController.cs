@@ -6,11 +6,16 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float moveSpeed;
-    [SerializeField] private float acceleration = 10f;
+    [SerializeField] private float moveSpeed = 8f;
+    [Tooltip("Rate to accelerate toward target speed when pressing direction")]
+    [SerializeField] private float accelRate   =  50f;
+    [Tooltip("Rate to brake to zero when no input")]
+    [SerializeField] private float brakeRate   =  80f;
+    [Tooltip("Rate to reverse direction when input flips sign")]
+    [SerializeField] private float turnRate    = 120f;
 
     [Header("Jump")]
-    [SerializeField] private float jumpForce;
+    [SerializeField] private float jumpForce = 12f;
 
     [Header("Physics")]
     [SerializeField] private Rigidbody2D rb2d;
@@ -28,24 +33,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
 
     [Header("Input")]
-    [SerializeField] private string horizontalAxis;
-    [SerializeField] private string jumpAxis;
+    [SerializeField] private string horizontalAxis = "Horizontal";
+    [SerializeField] private string jumpAxis       = "Jump";
 
     [Header("Rewind")]
-    [Tooltip("Where to teleport back to when rewind starts")]
     [SerializeField] private Transform startPoint;
-    [Tooltip("Trigger Collider (IsTrigger) that starts rewind")]
     [SerializeField] private Collider2D finishPoint;
     [SerializeField] private bool chaser;
-    
+
     private bool _isGrounded;
     private bool _isCrouching;
     private float _currentSpeed;
+    private float _lastInput;
     private float _originalColliderHeight;
     private Vector2 _originalColliderOffset;
     private bool _isRewinding;
 
-    // data structure to record each physics frame
+    // Recorded frame data for rewind
     private struct FrameData
     {
         public Vector2 position;
@@ -64,7 +68,7 @@ public class PlayerController : MonoBehaviour
         _originalColliderOffset = capsuleCollider.offset;
 
         GameManager.Instance.gameLost += Stop;
-        GameManager.Instance.gameWon += Stop;
+        GameManager.Instance.gameWon  += Stop;
     }
 
     private void Stop()
@@ -79,7 +83,6 @@ public class PlayerController : MonoBehaviour
     {
         if (_isRewinding || !GameManager.Instance.gameRunning) return;
 
-        // record this physics frame
         if (!chaser)
         {
             _recordedFrames.Add(new FrameData
@@ -88,8 +91,9 @@ public class PlayerController : MonoBehaviour
                 velocity    = rb2d.linearVelocity,
                 isCrouching = _isCrouching,
                 deltaTime   = Time.fixedDeltaTime
-            });   
+            });
         }
+
         float horizontalRaw = Input.GetAxisRaw(horizontalAxis);
         MovePlayer(horizontalRaw);
     }
@@ -98,6 +102,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_isRewinding || !GameManager.Instance.gameRunning) return;
 
+        // Ground & Jump
         _isGrounded = CheckIsGrounded();
         animator.SetBool("IsGrounded", _isGrounded);
 
@@ -108,31 +113,39 @@ public class PlayerController : MonoBehaviour
         }
         else animator.SetBool("Jump", false);
 
+        // Crouch
         bool wantToCrouch = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.S);
         if (wantToCrouch && _isGrounded) StartCrouch();
         else StopCrouch();
     }
 
-    private void MovePlayer(float horizontalInput)
+    private void MovePlayer(float h)
     {
-        if (Mathf.Approximately(horizontalInput, 0f))
+        float targetSpeed = h * moveSpeed;
+
+        // Snap to zero on input change to avoid momentum carry
+        if (!Mathf.Approximately(h, _lastInput))
         {
+            rb2d.linearVelocity = new Vector2(0f, rb2d.linearVelocity.y);
             _currentSpeed = 0f;
         }
+
+        // Determine which rate to use
+        float rate;
+        if (Mathf.Approximately(h, 0f))
+            rate = brakeRate;
+        else if (Mathf.Sign(targetSpeed) != Mathf.Sign(_currentSpeed))
+            rate = turnRate;
         else
-        {
-            float targetSpeed = horizontalInput * moveSpeed;
-            float acc = _isCrouching ? crouchAcceleration : acceleration;
-            if (_isCrouching) targetSpeed = 0.5f; 
-
-            _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acc * Time.fixedDeltaTime);
-        }
-
+            rate = accelRate;
+        
+        _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, rate * Time.fixedDeltaTime);
         rb2d.linearVelocity = new Vector2(_currentSpeed, rb2d.linearVelocity.y);
+        
         animator.SetFloat("Speed", Mathf.Abs(_currentSpeed));
+        spriteRenderer.flipX = (_currentSpeed < 0f);
 
-        if (_currentSpeed < 0f) spriteRenderer.flipX = true;
-        else if (_currentSpeed > 0f) spriteRenderer.flipX = false;
+        _lastInput = h;
     }
 
     private bool CheckIsGrounded()
@@ -156,7 +169,7 @@ public class PlayerController : MonoBehaviour
             playerVisualTransform.localPosition.z);
 
         capsuleCollider.size   = new Vector2(capsuleCollider.size.x, _originalColliderHeight * 0.7f);
-        capsuleCollider.offset = new Vector2(_originalColliderOffset.x, 
+        capsuleCollider.offset = new Vector2(_originalColliderOffset.x,
             _originalColliderOffset.y - (_originalColliderHeight * 0.25f));
         animator.SetBool("Crouch", true);
     }
@@ -164,7 +177,7 @@ public class PlayerController : MonoBehaviour
     private void StopCrouch()
     {
         if (!_isCrouching) return;
-        if (Physics2D.Raycast(transform.position, Vector2.up, _originalColliderHeight - 0.5f, groundLayer)) 
+        if (Physics2D.Raycast(transform.position, Vector2.up, _originalColliderHeight - 0.5f, groundLayer))
             return;
 
         _isCrouching = false;
@@ -178,10 +191,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if(_isRewinding) return;
+        if (_isRewinding) return;
         if (other == finishPoint && !chaser)
         {
-            GameManager.Instance.StopTimer(); 
+            GameManager.Instance.StopTimer();
             GameManager.Instance.InitRewind();
             StartCoroutine(RewindRoutine());
         }
@@ -198,60 +211,45 @@ public class PlayerController : MonoBehaviour
     private IEnumerator RewindRoutine()
     {
         _isRewinding = true;
-        
         var originalInterpolation = rb2d.interpolation;
-        
+
         rb2d.bodyType = RigidbodyType2D.Kinematic;
         rb2d.interpolation = RigidbodyInterpolation2D.None;
         rb2d.linearVelocity = Vector2.zero;
         rb2d.angularVelocity = 0f;
-        
-        rb2d.position = startPoint.position; 
+
+        rb2d.position = startPoint.position;
         transform.position = startPoint.position;
         StopCrouch();
-        _isCrouching = false;
 
         yield return new WaitForFixedUpdate();
-        
-        for (int i = 0; i < _recordedFrames.Count; i++)
+
+        foreach (var frame in _recordedFrames)
         {
-            if(GameManager.Instance.gameRunning == false) break;
-            FrameData frame = _recordedFrames[i];
-            
-            if (frame.isCrouching && !_isCrouching)
-            {
-                StartCrouch(); // Call only if state changed
-            }
-            else if (!frame.isCrouching && _isCrouching)
-            {
-                StopCrouch(); // Call only if state changed
-            }
+            if (!GameManager.Instance.gameRunning) break;
+
+            if (frame.isCrouching && !_isCrouching) StartCrouch();
+            else if (!frame.isCrouching && _isCrouching) StopCrouch();
             _isCrouching = frame.isCrouching;
-            
+
             rb2d.MovePosition(frame.position);
-            
             float speed = frame.velocity.magnitude;
             animator.SetFloat("Speed", speed);
-            
-            if (frame.velocity.x < -0.1f) spriteRenderer.flipX = true;
-            else if (frame.velocity.x > 0.1f) spriteRenderer.flipX = false;
+            spriteRenderer.flipX = (frame.velocity.x < -0.1f);
 
-            // Wait for the next physics update cycle
             yield return new WaitForFixedUpdate();
         }
-        
+
         rb2d.bodyType = RigidbodyType2D.Dynamic;
         rb2d.interpolation = originalInterpolation;
-        
         _recordedFrames.Clear();
-        
-        if (_isCrouching) StopCrouch();
 
+        if (_isCrouching) StopCrouch();
         animator.SetFloat("Speed", 0f);
         animator.SetBool("Crouch", false);
-
         _isRewinding = false;
-        if(GameManager.Instance.gameRunning)
+
+        if (GameManager.Instance.gameRunning)
             GameManager.Instance.PlayerEscaped();
     }
 }
