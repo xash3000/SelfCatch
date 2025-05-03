@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
             if (_isCrouching)
             {
-                targetSpeed = horizontalInput * moveSpeed * 0.5f;
+                targetSpeed = 0.5f;
                 acc = crouchAcceleration;
             }
             
