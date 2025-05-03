@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,7 +36,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform startPoint;
     [Tooltip("Trigger Collider (IsTrigger) that starts rewind")]
     [SerializeField] private Collider2D finishPoint;
-
+    [SerializeField] private bool chaser;
+    
     private bool _isGrounded;
     private bool _isCrouching;
     private float _currentSpeed;
@@ -67,14 +69,16 @@ public class PlayerController : MonoBehaviour
         if (_isRewinding || !GameManager.Instance.gameRunning) return;
 
         // record this physics frame
-        _recordedFrames.Add(new FrameData
+        if (!chaser)
         {
-            position    = rb2d.position,
-            velocity    = rb2d.linearVelocity,
-            isCrouching = _isCrouching,
-            deltaTime   = Time.fixedDeltaTime
-        });
-        
+            _recordedFrames.Add(new FrameData
+            {
+                position    = rb2d.position,
+                velocity    = rb2d.linearVelocity,
+                isCrouching = _isCrouching,
+                deltaTime   = Time.fixedDeltaTime
+            });   
+        }
         float horizontalRaw = Input.GetAxisRaw(horizontalAxis);
         MovePlayer(horizontalRaw);
     }
@@ -163,10 +167,20 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_isRewinding) return;
-        if (other == finishPoint)
+        if(_isRewinding) return;
+        if (other == finishPoint && !chaser)
         {
+            GameManager.Instance.StopTimer(); 
+            GameManager.Instance.InitRewind();
             StartCoroutine(RewindRoutine());
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (chaser && other.gameObject.CompareTag("Player") && GameManager.Instance.gameRunning)
+        {
+            GameManager.Instance.CatchPlayer();
         }
     }
 
@@ -183,13 +197,14 @@ public class PlayerController : MonoBehaviour
         
         rb2d.position = startPoint.position; 
         transform.position = startPoint.position;
-        _isCrouching = false;
         StopCrouch();
+        _isCrouching = false;
 
         yield return new WaitForFixedUpdate();
         
         for (int i = 0; i < _recordedFrames.Count; i++)
         {
+            if(GameManager.Instance.gameRunning == false) break;
             FrameData frame = _recordedFrames[i];
             
             if (frame.isCrouching && !_isCrouching)
@@ -225,5 +240,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Crouch", false);
 
         _isRewinding = false;
+        if(GameManager.Instance.gameRunning)
+            GameManager.Instance.PlayerEscaped();
     }
 }
