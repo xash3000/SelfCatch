@@ -3,43 +3,43 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float acceleration = 10f;
+
+    [Header("Jump")]
     [SerializeField] private float jumpForce;
+
+    [Header("Physics")]
     [SerializeField] private Rigidbody2D rb2d;
+    [SerializeField] private CapsuleCollider2D capsuleCollider;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float groundCheckDistance = 2f;
+
+    [Header("Crouch")]
+    [SerializeField] private float crouchTransformYOffset = -0.25f;
+    [SerializeField] private Transform playerVisualTransform;
+    [SerializeField] private float crouchAcceleration = 4f;
+
+    [Header("Components")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator animator;
-    //[SerializeField] private Transform playerRespawnPoint;
+
+    [Header("Input")]
     [SerializeField] private string horizontalAxis;
     [SerializeField] private string jumpAxis;
 
-    // private AudioSource audioSource;
-
     private bool _isGrounded;
-    
-    // crouch
-    //[SerializeField] private float crouchSpeedFactor = 0.5f;
-    [SerializeField] private CapsuleCollider2D capsuleCollider;
+    private bool _isCrouching;
+    private float _currentSpeed;
     private float _originalColliderHeight;
     private Vector2 _originalColliderOffset;
-    private bool  _isCrouching;
-    [SerializeField] private float crouchTransformYOffset = -0.25f;
-    [SerializeField] private Transform playerVisualTransform;
-    
-    // acceleration
-    [SerializeField] private float acceleration = 10f; 
-    private float _currentSpeed = 0f;
 
     private void Start()
     {
-        if (rb2d == null)
-            rb2d = GetComponent<Rigidbody2D>();
-        if(capsuleCollider == null)
-            capsuleCollider = GetComponent<CapsuleCollider2D>();
-        
-        // audioSource = GetComponent<AudioSource>();
-        
+        rb2d ??= GetComponent<Rigidbody2D>();
+        capsuleCollider ??= GetComponent<CapsuleCollider2D>();
+
         _originalColliderHeight = capsuleCollider.size.y;
         _originalColliderOffset = capsuleCollider.offset;
     }
@@ -54,7 +54,10 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (!GameManager.Instance.gameRunning) return;
+
         _isGrounded = CheckIsGrounded();
+        animator.SetBool("IsGrounded", _isGrounded);
+
         if (_isGrounded && Input.GetButtonDown(jumpAxis))
         {
             Jump();
@@ -62,10 +65,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-                animator.SetBool("Jump", false);
+            animator.SetBool("Jump", false);
         }
-        animator.SetBool("IsGrounded", _isGrounded);
-        
+
         bool wantToCrouch = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
         if (wantToCrouch && _isGrounded)
             StartCrouch();
@@ -76,69 +78,62 @@ public class PlayerController : MonoBehaviour
     private void MovePlayer(float horizontalInput)
     {
         float targetSpeed = horizontalInput * moveSpeed;
-        
-        if(!_isCrouching) // accelerate only when not crouching
-            _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acceleration * Time.fixedDeltaTime);
+
+        float acc = acceleration;
+        if (_isCrouching)
+        {
+            targetSpeed = 0.5f;
+            acc = crouchAcceleration;
+        }
+        _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acc * Time.fixedDeltaTime);
+
         rb2d.linearVelocity = new Vector2(_currentSpeed, rb2d.linearVelocity.y);
-        
-        animator.SetFloat("Speed", Math.Abs(rb2d.linearVelocity.x));
-        if (rb2d.linearVelocity.x < 0f)
-            spriteRenderer.flipX = true;
-        if (rb2d.linearVelocity.x > 0f)
-            spriteRenderer.flipX = false;
+        animator.SetFloat("Speed", Mathf.Abs(rb2d.linearVelocity.x));
+
+        if (rb2d.linearVelocity.x < 0f) spriteRenderer.flipX = true;
+        if (rb2d.linearVelocity.x > 0f) spriteRenderer.flipX = false;
     }
 
     private bool CheckIsGrounded()
     {
-        if (Physics2D.Raycast(transform.position, Vector3.down, groundCheckDistance, groundLayer))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
     }
 
     private void Jump()
     {
-        //audioSource.Play();
         rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce);
     }
-    
+
     private void StartCrouch()
     {
-        if (_isCrouching) return; 
-        
+        if (_isCrouching) return;
+
         _isCrouching = true;
         playerVisualTransform.localPosition = new Vector3(
-            playerVisualTransform.localPosition.x, 
-            crouchTransformYOffset, 
+            playerVisualTransform.localPosition.x,
+            crouchTransformYOffset,
             playerVisualTransform.localPosition.z);
-        
-        capsuleCollider.size  = new Vector2(capsuleCollider.size.x, _originalColliderHeight * 0.7f);
+
+        capsuleCollider.size = new Vector2(capsuleCollider.size.x, _originalColliderHeight * 0.7f);
         capsuleCollider.offset = new Vector2(_originalColliderOffset.x, _originalColliderOffset.y - (_originalColliderHeight * 0.25f));
-        animator?.SetBool("Crouch", true);
+        animator.SetBool("Crouch", true);
     }
 
     private void StopCrouch()
     {
         if (!_isCrouching) return;
-        
-        // Raycast up to see if there's space to stand
+
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.up, _originalColliderHeight, groundLayer);
-        if (hit.collider != null)
-            return; // still blocked — stay crouched
+        if (hit.collider != null) return;
 
         _isCrouching = false;
-        
-        capsuleCollider.size   = new Vector2(capsuleCollider.size.x, _originalColliderHeight);
+        capsuleCollider.size = new Vector2(capsuleCollider.size.x, _originalColliderHeight);
         capsuleCollider.offset = _originalColliderOffset;
-        animator?.SetBool("Crouch", false);
-        
+        animator.SetBool("Crouch", false);
+
         playerVisualTransform.localPosition = new Vector3(
-            playerVisualTransform.localPosition.x, 
-            0f, 
+            playerVisualTransform.localPosition.x,
+            0f,
             playerVisualTransform.localPosition.z);
     }
 }

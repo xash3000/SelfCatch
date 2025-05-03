@@ -231,20 +231,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  acceleration: 10
   jumpForce: 7
   rb2d: {fileID: 22951888}
+  capsuleCollider: {fileID: 22951887}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckDistance: 1.5
+  groundCheckDistance: 1
+  crouchTransformYOffset: -0.25
+  playerVisualTransform: {fileID: 1801848731}
+  crouchAcceleration: 5
   spriteRenderer: {fileID: 1801848732}
   animator: {fileID: 1801848733}
   horizontalAxis: Horizontal
   jumpAxis: Jump
-  capsuleCollider: {fileID: 22951887}
-  crouchTransformYOffset: -0.25
-  playerVisualTransform: {fileID: 1801848731}
-  acceleration: 10
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -660,8 +661,8 @@ Transform:
   m_GameObject: {fileID: 884331494}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.7, y: -0.77, z: 0}
-  m_LocalScale: {x: 2.63, y: 2.54, z: 1}
+  m_LocalPosition: {x: 22.7, y: -2.58, z: 0}
+  m_LocalScale: {x: 2.63, y: 0.7874, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1261450763}
@@ -811,6 +812,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a824e98878dd4c46a2918a07bb3c2b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameRunning: 1
 --- !u!1 &1045249016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1231,7 +1233,7 @@ Transform:
   m_GameObject: {fileID: 1249682783}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.88, y: -0.77, z: 0}
+  m_LocalPosition: {x: 2.88, y: -1.64, z: 0}
   m_LocalScale: {x: 2.63, y: 2.54, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
