@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
     private void StopCrouch()
     {
         if (!_isCrouching) return;
-        if (Physics2D.Raycast(transform.position, Vector2.up, _originalColliderHeight, groundLayer)) 
+        if (Physics2D.Raycast(transform.position, Vector2.up, _originalColliderHeight - 0.5f, groundLayer)) 
             return;
 
         _isCrouching = false;
