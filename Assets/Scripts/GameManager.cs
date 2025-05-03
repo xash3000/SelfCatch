@@ -5,14 +5,16 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public bool gameRunning = true;
-    public bool timerRunning = true;
+    public bool gameRunning = false;
+    public bool timerRunning = false;
     private float _elapsedTime = 0f;
 
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject chaser;
     [SerializeField] private CinemachineCamera cam;
-    
+
+    public event Action gameWon;
+    public event Action gameLost;
     public string FormattedTime
     {
         get
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour
     public void StartTimer()
     {
         timerRunning = true;
+        gameRunning = true;
     }
     
     public void StopTimer()
@@ -58,11 +61,13 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log($"You win: " + FormattedTime);
         gameRunning = false;
+        gameWon?.Invoke();
     }
 
     public void PlayerEscaped()
     {
         Debug.Log($"You lost: Player Escaped");
         gameRunning = false;
+        gameLost?.Invoke();
     }
 }
