@@ -47,8 +47,9 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (!GameManager.Instance.gameRunning) return;
-        float horizontalInput = Input.GetAxis(horizontalAxis);
-        MovePlayer(horizontalInput);
+        
+        float horizontalRaw = Input.GetAxisRaw(horizontalAxis);
+        MovePlayer(horizontalRaw);
     }
 
     private void Update()
@@ -68,7 +69,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Jump", false);
         }
 
-        bool wantToCrouch = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+        bool wantToCrouch = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.S);
         if (wantToCrouch && _isGrounded)
             StartCrouch();
         else
@@ -77,21 +78,29 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer(float horizontalInput)
     {
-        float targetSpeed = horizontalInput * moveSpeed;
-
-        float acc = acceleration;
-        if (_isCrouching)
+        if (Mathf.Approximately(horizontalInput, 0f))
         {
-            targetSpeed = 0.5f;
-            acc = crouchAcceleration;
+            _currentSpeed = 0f;
         }
-        _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acc * Time.fixedDeltaTime);
+        else
+        {
+            float targetSpeed = horizontalInput * moveSpeed;
+            float acc = acceleration;
 
+            if (_isCrouching)
+            {
+                targetSpeed = horizontalInput * moveSpeed * 0.5f;
+                acc = crouchAcceleration;
+            }
+            
+            _currentSpeed = Mathf.MoveTowards(_currentSpeed, targetSpeed, acc * Time.fixedDeltaTime);
+        }
+        
         rb2d.linearVelocity = new Vector2(_currentSpeed, rb2d.linearVelocity.y);
-        animator.SetFloat("Speed", Mathf.Abs(rb2d.linearVelocity.x));
-
-        if (rb2d.linearVelocity.x < 0f) spriteRenderer.flipX = true;
-        if (rb2d.linearVelocity.x > 0f) spriteRenderer.flipX = false;
+        animator.SetFloat("Speed", Mathf.Abs(_currentSpeed));
+        
+        if (_currentSpeed < 0f) spriteRenderer.flipX = true;
+        else if (_currentSpeed > 0f) spriteRenderer.flipX = false;
     }
 
     private bool CheckIsGrounded()
