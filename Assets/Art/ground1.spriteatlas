@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ground1
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 4
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 0
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - c276f0560e6fe1243aca39701c40b8bb: 9214952100793982614
+    - c276f0560e6fe1243aca39701c40b8bb: -3948588090824392252
+    - c276f0560e6fe1243aca39701c40b8bb: 4971740607128298099
+    - c276f0560e6fe1243aca39701c40b8bb: 7098623233022031174
+    - c276f0560e6fe1243aca39701c40b8bb: 869499037529776762
+    - c276f0560e6fe1243aca39701c40b8bb: 2422925166920900354
+    - c276f0560e6fe1243aca39701c40b8bb: -677496523206940780
+    - c276f0560e6fe1243aca39701c40b8bb: 6855022620295495395
+    - c276f0560e6fe1243aca39701c40b8bb: -8235764138888494939
+    - c276f0560e6fe1243aca39701c40b8bb: 5459986141469358859
+    - c276f0560e6fe1243aca39701c40b8bb: -5473647700537547706
+    - c276f0560e6fe1243aca39701c40b8bb: 2000542593500632351
+    - c276f0560e6fe1243aca39701c40b8bb: 6925685756828393891
+    - c276f0560e6fe1243aca39701c40b8bb: 5779503707155101733
+    - c276f0560e6fe1243aca39701c40b8bb: 114063976354308085
+    - c276f0560e6fe1243aca39701c40b8bb: -8003422933497395125
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 9214952100793982614, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: -3948588090824392252, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 4971740607128298099, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 7098623233022031174, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 869499037529776762, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 2422925166920900354, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: -677496523206940780, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 6855022620295495395, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: -8235764138888494939, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 5459986141469358859, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: -5473647700537547706, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 2000542593500632351, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 6925685756828393891, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 5779503707155101733, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: 114063976354308085, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  - {fileID: -8003422933497395125, guid: c276f0560e6fe1243aca39701c40b8bb, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - 8166388_orig_8
+  - 8166388_orig_9
+  - 8166388_orig_2
+  - 8166388_orig_3
+  - 8166388_orig_0
+  - 8166388_orig_1
+  - 8166388_orig_6
+  - 8166388_orig_7
+  - 8166388_orig_4
+  - 8166388_orig_5
+  - 8166388_orig_11
+  - 8166388_orig_10
+  - 8166388_orig_13
+  - 8166388_orig_12
+  - 8166388_orig_15
+  - 8166388_orig_14
+  m_RenderDataMap: {}
+  m_Tag: ground1
+  m_IsVariant: 0
