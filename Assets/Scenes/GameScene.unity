@@ -3578,8 +3578,8 @@ MonoBehaviour:
 
     You have to catch yourself in the second run'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: e6da957dd7d0932448300e904d18a666, type: 2}
-  m_sharedMaterial: {fileID: -5032058403888518677, guid: e6da957dd7d0932448300e904d18a666, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

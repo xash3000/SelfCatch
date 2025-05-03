@@ -62,6 +62,17 @@ public class PlayerController : MonoBehaviour
 
         _originalColliderHeight = capsuleCollider.size.y;
         _originalColliderOffset = capsuleCollider.offset;
+
+        GameManager.Instance.gameLost += Stop;
+        GameManager.Instance.gameWon += Stop;
+    }
+
+    private void Stop()
+    {
+        rb2d.linearVelocity = Vector2.zero;
+        animator.SetFloat("Speed", 0f);
+        animator.SetBool("Jump", false);
+        animator.SetBool("Crouch", false);
     }
 
     private void FixedUpdate()
