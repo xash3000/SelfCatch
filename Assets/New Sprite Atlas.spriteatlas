@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ground1
+  m_Name: New Sprite Atlas
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -20,20 +20,7 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings:
-    - serializedVersion: 4
-      m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 2048
-      m_ResizeAlgorithm: 0
-      m_TextureFormat: -1
-      m_TextureCompression: 0
-      m_CompressionQuality: 50
-      m_CrunchedCompression: 0
-      m_AllowsAlphaSplitting: 0
-      m_Overridden: 0
-      m_IgnorePlatformSupport: 0
-      m_AndroidETC2FallbackOverride: 0
-      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    platformSettings: []
     packingSettings:
       serializedVersion: 2
       padding: 4
@@ -102,5 +89,5 @@ SpriteAtlas:
   - 8166388_orig_15
   - 8166388_orig_14
   m_RenderDataMap: {}
-  m_Tag: ground1
+  m_Tag: New Sprite Atlas
   m_IsVariant: 0
