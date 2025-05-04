@@ -197,7 +197,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -222,8 +222,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 7
-  acceleration: 5
-  jumpForce: 6
+  accelRate: 50
+  brakeRate: 80
+  turnRate: 120
+  jumpForce: 9
   rb2d: {fileID: 5687491201756200278}
   capsuleCollider: {fileID: 1968175169342843546}
   groundLayer:
