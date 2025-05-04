@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -52,6 +53,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform startPoint;
     [SerializeField] private Collider2D finishPoint;
     [SerializeField] private bool chaser;
+    
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip jumpClip;
 
     private bool _isGrounded;
     private bool _isCrouching;
@@ -176,6 +181,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
+        audioSource.PlayOneShot(jumpClip);
         rb2d.linearVelocity = new Vector2(rb2d.linearVelocity.x, jumpForce);
     }
 
