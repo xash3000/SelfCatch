@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
         timerText.text = GameManager.Instance.FormattedTime;
         if (GameManager.Instance.timerRunning)
         {
-            timerText.color = Color.white;
+            timerText.color = Color.black;
         }
         else
         {

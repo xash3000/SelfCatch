@@ -139,8 +139,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -10.08, y: -3.13, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7770847314601486020}
   m_Father: {fileID: 0}
@@ -205,7 +205,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
@@ -221,8 +221,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e34118f54f9dc4438836aef8cd85a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  acceleration: 10
+  moveSpeed: 7
+  acceleration: 5
   jumpForce: 6
   rb2d: {fileID: 5687491201756200278}
   capsuleCollider: {fileID: 1968175169342843546}
@@ -239,3 +239,4 @@ MonoBehaviour:
   jumpAxis: Jump
   startPoint: {fileID: 0}
   finishPoint: {fileID: 0}
+  chaser: 0

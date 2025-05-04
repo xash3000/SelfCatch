@@ -14,7 +14,7 @@ public class GameUI : MonoBehaviour
         GameManager.Instance.gameWon += () =>
         {
             winPanel.SetActive(true);
-            winText.text = "You Win\n\nTime: " + GameManager.Instance.FormattedTime;
+            winText.text = GameManager.Instance.FormattedTime;
         };
         GameManager.Instance.gameLost += () => losePanel.SetActive(true);
     }

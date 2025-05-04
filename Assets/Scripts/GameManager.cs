@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject chaser;
-    [SerializeField] private CinemachineCamera cam;
+    [SerializeField] private CameraFollowPlayer cam;
 
     public event Action gameWon;
     public event Action gameLost;
@@ -51,9 +51,7 @@ public class GameManager : MonoBehaviour
     
     public void InitRewind()
     {
-        cam.Follow = chaser.transform;
-        cam.LookAt = chaser.transform;
-        
+        cam.player = chaser.transform;
         chaser.SetActive(true);
     }
 
@@ -69,5 +67,6 @@ public class GameManager : MonoBehaviour
         Debug.Log($"You lost: Player Escaped");
         gameRunning = false;
         gameLost?.Invoke();
+        cam.player = player.transform;
     }
 }
