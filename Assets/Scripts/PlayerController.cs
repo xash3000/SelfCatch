@@ -14,6 +14,18 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Rate to reverse direction when input flips sign")]
     [SerializeField] private float turnRate    = 120f;
 
+    [Header("Powerups")]
+    [Tooltip("Indicator to show when speed-up is active")]
+    [SerializeField] private GameObject speedUpIndicator;
+    [Tooltip("Indicator to show when slow-down is active")]
+    [SerializeField] private GameObject slowDownIndicator;
+    [Tooltip("Multiplier applied to moveSpeed on speed-up")]
+    [SerializeField] private float speedUpMultiplier = 1.5f;
+    [Tooltip("Multiplier applied to moveSpeed on slow-down")]
+    [SerializeField] private float slowDownMultiplier = 0.5f;
+    [Tooltip("Duration of powerup effect in seconds")]
+    [SerializeField] private float powerupDuration = 3f;
+
     [Header("Jump")]
     [SerializeField] private float jumpForce = 12f;
 
@@ -48,6 +60,9 @@ public class PlayerController : MonoBehaviour
     private float _originalColliderHeight;
     private Vector2 _originalColliderOffset;
     private bool _isRewinding;
+    private float originalMoveSpeed;
+
+    private Coroutine _powerupCoroutine;
 
     // Recorded frame data for rewind
     private struct FrameData
@@ -67,8 +82,14 @@ public class PlayerController : MonoBehaviour
         _originalColliderHeight = capsuleCollider.size.y;
         _originalColliderOffset = capsuleCollider.offset;
 
+        // Ensure indicators are off at start
+        if (speedUpIndicator != null) speedUpIndicator.SetActive(false);
+        if (slowDownIndicator != null) slowDownIndicator.SetActive(false);
+
         GameManager.Instance.gameLost += Stop;
         GameManager.Instance.gameWon  += Stop;
+        
+        originalMoveSpeed = moveSpeed;
     }
 
     private void Stop()
@@ -192,12 +213,66 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_isRewinding) return;
+
+        // Finish line
         if (other == finishPoint && !chaser)
         {
             GameManager.Instance.StopTimer();
             GameManager.Instance.InitRewind();
             StartCoroutine(RewindRoutine());
+            return;
         }
+
+        // Powerup triggers
+        if (other.CompareTag("SpeedUp"))
+        {
+            Destroy(other.gameObject);
+            ActivatePowerup(true);
+        }
+        else if (other.CompareTag("SlowDown"))
+        {
+            Destroy(other.gameObject);
+            ActivatePowerup(false);
+        }
+    }
+
+    private void ActivatePowerup(bool isSpeedUp)
+    {
+        // Cancel any existing powerup
+        if (_powerupCoroutine != null)
+        {
+            StopCoroutine(_powerupCoroutine);
+            ResetPowerup();
+        }
+
+        // Start new effect
+        _powerupCoroutine = StartCoroutine(PowerupRoutine(isSpeedUp));
+    }
+
+    private IEnumerator PowerupRoutine(bool isSpeedUp)
+    {
+        // Choose multiplier and indicator
+        float originalSpeed = originalMoveSpeed;
+        float multiplier = isSpeedUp ? speedUpMultiplier : slowDownMultiplier;
+        GameObject indicator = isSpeedUp ? speedUpIndicator : slowDownIndicator;
+
+        // Apply effect
+        moveSpeed = originalSpeed * multiplier;
+        if (indicator != null) indicator.SetActive(true);
+
+        // Wait
+        yield return new WaitForSeconds(powerupDuration);
+
+        // Reset
+        moveSpeed = originalSpeed;
+        ResetPowerup();
+        _powerupCoroutine = null;
+    }
+
+    private void ResetPowerup()
+    {
+        if (speedUpIndicator != null) speedUpIndicator.SetActive(false);
+        if (slowDownIndicator != null) slowDownIndicator.SetActive(false);
     }
 
     private void OnCollisionEnter2D(Collision2D other)

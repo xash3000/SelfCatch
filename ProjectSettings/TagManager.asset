@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Chaser
   - FinishPoint
+  - SpeedUp
+  - SlowDown
   layers:
   - Default
   - TransparentFX
