@@ -17090,7 +17090,7 @@ PrefabInstance:
     - target: {fileID: 6807338221721472804, guid: 99fdc6afb7cf9bf49bd6a60344ee769c, type: 3}
       propertyPath: finishPoint
       value: 
-      objectReference: {fileID: 681677942}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17468,9 +17468,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -905290367
   m_SortingLayer: 2
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  m_Color: {r: 0, g: 1, b: 0.041644096, a: 1}
+  m_SortingOrder: 57
+  m_Sprite: {fileID: 3730893057121563048, guid: 3099588141e43c447bc44b8d9162463a, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -17490,13 +17490,13 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 271.9, y: -1.44, z: 0}
-  m_LocalScale: {x: 4.91, y: 4.91, z: 4.91}
+  m_LocalScale: {x: 0.51, y: 0.51, z: 0.51}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &681677942
-CircleCollider2D:
+--- !u!61 &681677942
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -17530,7 +17530,17 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 10.24, y: 10.24}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 10.24, y: 10.24}
+  m_EdgeRadius: 0
 --- !u!1 &687035021
 GameObject:
   m_ObjectHideFlags: 0
@@ -17856,8 +17866,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 00:00:00
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3813115de731a8b4b8f751cc8529fabc, type: 2}
+  m_sharedMaterial: {fileID: 5275206817498574127, guid: 3813115de731a8b4b8f751cc8529fabc, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -18586,7 +18596,7 @@ PrefabInstance:
     - target: {fileID: 6807338221721472804, guid: 99fdc6afb7cf9bf49bd6a60344ee769c, type: 3}
       propertyPath: finishPoint
       value: 
-      objectReference: {fileID: 681677942}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
