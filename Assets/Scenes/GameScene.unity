@@ -17420,7 +17420,7 @@ GameObject:
   - component: {fileID: 681677942}
   m_Layer: 0
   m_Name: FinishPoint
-  m_TagString: Untagged
+  m_TagString: FinishPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18596,7 +18596,7 @@ PrefabInstance:
     - target: {fileID: 6807338221721472804, guid: 99fdc6afb7cf9bf49bd6a60344ee769c, type: 3}
       propertyPath: finishPoint
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 681677942}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
