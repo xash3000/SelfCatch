@@ -1,5 +1,7 @@
 # SelfCatch
 A game made for ulujam 2025, A platformer where you try to complete the level as fast as possible and then outperform yourself 
+
+# itch.io link
 play at [https://saharzar.itch.io/selfcatch](https://saharzar.itch.io/selfcatch)
 
 ![image](https://github.com/user-attachments/assets/97f38d5d-6d2e-4f19-80c6-1244133155e6)
